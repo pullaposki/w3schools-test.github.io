@@ -4,7 +4,7 @@ namespace WebApi.Models
 {
     public class ShipRate
     {
-        public int RateId  { get; set; }
+        public int ShipRateId  { get; set; }
         
         [Column(TypeName = "decimal(18, 2)")]
         public decimal PerKg { get; set; }
