@@ -4,12 +4,11 @@ namespace WebApi.Models
     {
         public int CompanyId { get; set; }
         public string CompanyName { get; set; } = string.Empty;
-        
-        // FK to PriceCategoryConfig
-        public int PriceCategoryId  { get; set; } 
-        
-        // Navigation properties
+
+        // Foreign key for PriceCategory
+         public int PriceCategoryId { get; set; }
+
+        // Navigation property for PriceCategory
         public PriceCategory PriceCategory {get; set; } = new PriceCategory();
-        public List<ShipRate> ShipRates { get; set; } = [];
     }
 }
