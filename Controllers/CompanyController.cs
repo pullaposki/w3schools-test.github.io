@@ -65,16 +65,30 @@ namespace WebApi.Controllers
 
             if(companyModel == null) return NotFound();
 
-            // EF started tracking
 
             companyModel.CompanyName = updateDto.CompanyName;
             companyModel.PriceCategoryId = updateDto.PriceCategoryId;
+            // EF started tracking
 
             _context.SaveChanges();
-
             // Saved to db, tracking stopped
 
             return Ok(companyModel.ToResponseDto());
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public IActionResult Delete([FromRoute] int id)
+        {
+            var companyModel  = _context.Companies.FirstOrDefault(c => c.CompanyId == id);
+
+            if(companyModel == null) return NotFound();
+
+            _context.Companies.Remove(companyModel);
+
+            _context.SaveChanges();
+
+            return NoContent();
         }
     }
 }
