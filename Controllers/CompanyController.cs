@@ -2,51 +2,41 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Data;
 using WebApi.Dtos.Company;
+using WebApi.Interfaces;
 using WebApi.Mappers;
 
 namespace WebApi.Controllers
 {
     [Route("api/company"), ApiController]
-    public class CompanyController(ApplicationDbContext context) : ControllerBase
+    public class CompanyController(ApplicationDbContext context, ICompanyRepo companyRepo) : ControllerBase
     {
         private readonly ApplicationDbContext _context = context;
+        private readonly ICompanyRepo _companyRepo = companyRepo;
 
         [HttpGet]
         public async Task <IActionResult> GetAll()
         {
-            // Use the ToList extension method to convert the DbSet<Company> to a List<Company>
-            var companies = await _context.Companies.ToListAsync();
-
-            // Use the ToCompanyDto extension method to convert the Company entities to CompanyDto objects using a c# version of the map function
+            var companies = await _companyRepo.GetAllAsync();
             var companiesDto = companies.Select(c => c.ToResponseDto());
-            
+
             return Ok(companiesDto);
         }
 
         [HttpGet("{id}")]
         public async Task <IActionResult> GetById(int id)
         {
-            var company = await _context.Companies.FindAsync(id);
-
-            if (company == null)
-            {
-                return NotFound();
-            }
+            var company = await _companyRepo.GetByIdAsync(id);
+            if (company == null) return NotFound();
 
             return Ok(company.ToResponseDto());
         }        
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ACreateCompanyRequestDto createACompanyRequestDto)
+        public async Task<IActionResult> Create([FromBody] ACreateCompanyRequestDto createDto)
         {
-            var companyModel = createACompanyRequestDto.ToModel();
+            var companyModel = createDto.ToModel();
+            await _companyRepo.CreateAsync(companyModel);
 
-            await _context.Companies.AddAsync(companyModel);
-            await _context.SaveChangesAsync();
-
-            // this line of code is creating an HTTP 201 response to indicate that a new company was successfully created. 
-            // The response includes a Location header with a URL that can be used to retrieve the new company, 
-            // and the body of the response includes a representation of the new company.
             return CreatedAtAction(nameof(GetById), new {id = companyModel.CompanyId}, companyModel.ToResponseDto() );
         }
     
@@ -54,16 +44,9 @@ namespace WebApi.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] AnUpdateCompanyRequestDto updateDto)
         {
-            var companyModel = await _context.Companies.FirstOrDefaultAsync(c => c.CompanyId == id);
+            var companyModel = await _companyRepo.UpdateAsync(id, updateDto);
 
             if(companyModel == null) return NotFound();
-
-            companyModel.CompanyName = updateDto.CompanyName;
-            companyModel.PriceCategoryId = updateDto.PriceCategoryId;
-            // EF started tracking
-
-            await _context.SaveChangesAsync();
-            // Saved to db, tracking stopped
 
             return Ok(companyModel.ToResponseDto());
         }
@@ -72,14 +55,9 @@ namespace WebApi.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var companyModel  = await _context.Companies.FirstOrDefaultAsync(c => c.CompanyId == id);
+            var companyModel  = await _companyRepo.DeleteAsync(id);
 
             if(companyModel == null) return NotFound();
-
-            // In-memory operation, no async needed
-            _context.Companies.Remove(companyModel);
-
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }
