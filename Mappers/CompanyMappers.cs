@@ -5,9 +5,9 @@ namespace WebApi.Mappers
 {
     public static class CompanyMappers
     {
-        public static CompanyResponseDto ToResponseDto(this Company companyModel)
+        public static ACompanyResponseDto ToResponseDto(this Company companyModel)
         {
-            return new CompanyResponseDto
+            return new ACompanyResponseDto
             {
                 CompanyId = companyModel.CompanyId,
                 CompanyName = companyModel.CompanyName,

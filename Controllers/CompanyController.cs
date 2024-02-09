@@ -12,15 +12,15 @@ namespace WebApi.Controllers
         private readonly ApplicationDbContext _context = context;
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<CompanyResponseDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(IEnumerable<ACompanyResponseDto>), (int)HttpStatusCode.OK)]
         public IActionResult GetAll()
         {
-            IEnumerable<CompanyResponseDto> companies = GetCompanyDtos();
+            IEnumerable<ACompanyResponseDto> companies = GetCompanyDtos();
 
             return Ok(companies);
         }
 
-        private IEnumerable<CompanyResponseDto> GetCompanyDtos()
+        private IEnumerable<ACompanyResponseDto> GetCompanyDtos()
         {
             // Use the ToList extension method to convert the DbSet<Company> to a List<Company>
             var companies = _context.Companies.ToList()
@@ -54,6 +54,27 @@ namespace WebApi.Controllers
             // this line of code is creating an HTTP 201 response to indicate that a new company was successfully created. 
             //The response includes a Location header with a URL that can be used to retrieve the new company, and the body of the response includes a representation of the new company.
             return CreatedAtAction(nameof(GetById), new {id = companyModel.CompanyId}, companyModel.ToResponseDto() );
+        }
+    
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult Update([FromRoute] int id, [FromBody] AnUpdateCompanyRequestDto updateDto)
+        {
+
+            var companyModel = _context.Companies.FirstOrDefault(c => c.CompanyId == id);
+
+            if(companyModel == null) return NotFound();
+
+            // EF started tracking
+
+            companyModel.CompanyName = updateDto.CompanyName;
+            companyModel.PriceCategoryId = updateDto.PriceCategoryId;
+
+            _context.SaveChanges();
+
+            // Saved to db, tracking stopped
+
+            return Ok(companyModel.ToResponseDto());
         }
     }
 }
