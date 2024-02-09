@@ -1,5 +1,5 @@
-using System.Net;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebApi.Data;
 using WebApi.Dtos.Company;
 using WebApi.Mappers;
@@ -12,29 +12,21 @@ namespace WebApi.Controllers
         private readonly ApplicationDbContext _context = context;
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<ACompanyResponseDto>), (int)HttpStatusCode.OK)]
-        public IActionResult GetAll()
-        {
-            IEnumerable<ACompanyResponseDto> companies = GetCompanyDtos();
-
-            return Ok(companies);
-        }
-
-        private IEnumerable<ACompanyResponseDto> GetCompanyDtos()
+        public async Task <IActionResult> GetAll()
         {
             // Use the ToList extension method to convert the DbSet<Company> to a List<Company>
-            var companies = _context.Companies.ToList()
+            var companies = await _context.Companies.ToListAsync();
 
-                // Use the ToCompanyDto extension method to convert the Company entities to CompanyDto objects using a c# version of the map function
-                .Select(c => c.ToResponseDto());
-
-            return companies;
+            // Use the ToCompanyDto extension method to convert the Company entities to CompanyDto objects using a c# version of the map function
+            var companiesDto = companies.Select(c => c.ToResponseDto());
+            
+            return Ok(companiesDto);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public async Task <IActionResult> GetById(int id)
         {
-            var company = _context.Companies.Find(id);
+            var company = await _context.Companies.FindAsync(id);
 
             if (company == null)
             {
@@ -45,32 +37,32 @@ namespace WebApi.Controllers
         }        
 
         [HttpPost]
-        public IActionResult Create([FromBody] ACreateCompanyRequestDto createACompanyRequestDto)
+        public async Task<IActionResult> Create([FromBody] ACreateCompanyRequestDto createACompanyRequestDto)
         {
             var companyModel = createACompanyRequestDto.ToModel();
-            _context.Companies.Add(companyModel);
-            _context.SaveChanges();
+
+            await _context.Companies.AddAsync(companyModel);
+            await _context.SaveChangesAsync();
 
             // this line of code is creating an HTTP 201 response to indicate that a new company was successfully created. 
-            //The response includes a Location header with a URL that can be used to retrieve the new company, and the body of the response includes a representation of the new company.
+            // The response includes a Location header with a URL that can be used to retrieve the new company, 
+            // and the body of the response includes a representation of the new company.
             return CreatedAtAction(nameof(GetById), new {id = companyModel.CompanyId}, companyModel.ToResponseDto() );
         }
     
         [HttpPut]
         [Route("{id}")]
-        public IActionResult Update([FromRoute] int id, [FromBody] AnUpdateCompanyRequestDto updateDto)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] AnUpdateCompanyRequestDto updateDto)
         {
-
-            var companyModel = _context.Companies.FirstOrDefault(c => c.CompanyId == id);
+            var companyModel = await _context.Companies.FirstOrDefaultAsync(c => c.CompanyId == id);
 
             if(companyModel == null) return NotFound();
-
 
             companyModel.CompanyName = updateDto.CompanyName;
             companyModel.PriceCategoryId = updateDto.PriceCategoryId;
             // EF started tracking
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             // Saved to db, tracking stopped
 
             return Ok(companyModel.ToResponseDto());
@@ -78,15 +70,16 @@ namespace WebApi.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        public IActionResult Delete([FromRoute] int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var companyModel  = _context.Companies.FirstOrDefault(c => c.CompanyId == id);
+            var companyModel  = await _context.Companies.FirstOrDefaultAsync(c => c.CompanyId == id);
 
             if(companyModel == null) return NotFound();
 
+            // In-memory operation, no async needed
             _context.Companies.Remove(companyModel);
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
