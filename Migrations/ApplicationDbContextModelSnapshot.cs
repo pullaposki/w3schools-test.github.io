@@ -55,23 +55,23 @@ namespace WebApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ShipRateId")
+                    b.Property<int>("ShipRatesId")
                         .HasColumnType("int");
 
                     b.HasKey("PriceCategoryId");
 
-                    b.HasIndex("ShipRateId");
+                    b.HasIndex("ShipRatesId");
 
                     b.ToTable("PriceCategories");
                 });
 
-            modelBuilder.Entity("WebApi.Models.ShipRate", b =>
+            modelBuilder.Entity("WebApi.Models.ShipRates", b =>
                 {
-                    b.Property<int>("ShipRateId")
+                    b.Property<int>("ShipRatesId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ShipRateId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ShipRatesId"));
 
                     b.Property<decimal>("PerCubicMeter")
                         .HasColumnType("decimal(18, 2)");
@@ -82,7 +82,7 @@ namespace WebApi.Migrations
                     b.Property<decimal>("PerKm")
                         .HasColumnType("decimal(18, 2)");
 
-                    b.HasKey("ShipRateId");
+                    b.HasKey("ShipRatesId");
 
                     b.ToTable("ShipRates");
                 });
@@ -100,13 +100,13 @@ namespace WebApi.Migrations
 
             modelBuilder.Entity("WebApi.Models.PriceCategory", b =>
                 {
-                    b.HasOne("WebApi.Models.ShipRate", "ShipRate")
+                    b.HasOne("WebApi.Models.ShipRates", "ShipRates")
                         .WithMany()
-                        .HasForeignKey("ShipRateId")
+                        .HasForeignKey("ShipRatesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ShipRate");
+                    b.Navigation("ShipRates");
                 });
 #pragma warning restore 612, 618
         }

@@ -5,11 +5,11 @@ namespace WebApi.Models
         public int PriceCategoryId { get; set; }
 
         public string PriceCategoryName { get; set; } = string.Empty;
-        
-        // Foreign key for ShipRate
-        public int ShipRateId { get; set; }
 
-        // Navigation property for ShipRate
-        public ShipRate ShipRate { get; set; } = new ShipRate();
+        // Foreign key for ShipRates
+        public int ShipRatesId { get; set; }
+
+        // Navigation property for ShipRates lookup table
+        public ShipRates ShipRates { get; set; } = new ShipRates();
     }
 }

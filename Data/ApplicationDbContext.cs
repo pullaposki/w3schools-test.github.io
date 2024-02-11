@@ -12,6 +12,6 @@ namespace WebApi.Data
 
         public DbSet<Company> Companies { get; set; }
         public DbSet<PriceCategory> PriceCategories { get; set; }
-        public DbSet<ShipRate> ShipRates { get; set; }
+        public DbSet<ShipRates> ShipRates { get; set; }
     }
 }

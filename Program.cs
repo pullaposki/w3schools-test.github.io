@@ -20,6 +20,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 builder.Services.AddScoped<ICompanyRepo, CompanyRepo>();
+builder.Services.AddScoped<IPriceCategoryRepo, PriceCategoryRepo>();
 
 var app = builder.Build();
 

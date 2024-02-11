@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using WebApi.Data;
-using WebApi.Dtos.Company;
+using WebApi.Dtos;
 using WebApi.Interfaces;
 using WebApi.Mappers;
 
@@ -12,9 +11,9 @@ namespace WebApi.Controllers
     {
         private readonly ApplicationDbContext _context = context;
         private readonly ICompanyRepo _companyRepo = companyRepo;
-
+        
         [HttpGet]
-        public async Task <IActionResult> GetAll()
+        public async Task<IActionResult> GetAll()
         {
             var companies = await _companyRepo.GetAllAsync();
             var companiesDto = companies.Select(c => c.ToResponseDto());
@@ -22,14 +21,15 @@ namespace WebApi.Controllers
             return Ok(companiesDto);
         }
 
+
         [HttpGet("{id}")]
-        public async Task <IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
             var company = await _companyRepo.GetByIdAsync(id);
             if (company == null) return NotFound();
 
             return Ok(company.ToResponseDto());
-        }        
+        }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ACreateCompanyRequestDto createDto)
@@ -37,16 +37,16 @@ namespace WebApi.Controllers
             var companyModel = createDto.ToModel();
             await _companyRepo.CreateAsync(companyModel);
 
-            return CreatedAtAction(nameof(GetById), new {id = companyModel.CompanyId}, companyModel.ToResponseDto() );
+            return CreatedAtAction(nameof(GetById), new { id = companyModel.CompanyId }, companyModel.ToResponseDto());
         }
-    
+
         [HttpPut]
         [Route("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] AnUpdateCompanyRequestDto updateDto)
         {
             var companyModel = await _companyRepo.UpdateAsync(id, updateDto);
 
-            if(companyModel == null) return NotFound();
+            if (companyModel == null) return NotFound();
 
             return Ok(companyModel.ToResponseDto());
         }
@@ -55,9 +55,9 @@ namespace WebApi.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var companyModel  = await _companyRepo.DeleteAsync(id);
+            var companyModel = await _companyRepo.DeleteAsync(id);
 
-            if(companyModel == null) return NotFound();
+            if (companyModel == null) return NotFound();
 
             return NoContent();
         }

@@ -20,22 +20,22 @@ namespace WebApi.Utils
 
         private static void SeedDb(ApplicationDbContext context)
         {
-            var priceCategories = new PriceCategory []
+            var priceCategories = new PriceCategory[]
             {
-                new PriceCategory { PriceCategoryName = "Category 1", ShipRate = new ShipRate { PerKg = 10, PerCubicMeter = 20, PerKm = 30 } },
-                new PriceCategory { PriceCategoryName = "Category 2", ShipRate = new ShipRate { PerKg = 15, PerCubicMeter = 25, PerKm = 35 } },
-                new PriceCategory { PriceCategoryName = "Category 3", ShipRate = new ShipRate { PerKg = 20, PerCubicMeter = 30, PerKm = 40 } }
+                new PriceCategory { PriceCategoryName = "Category 1", ShipRates = new ShipRates { PerKg = 10, PerCubicMeter = 20, PerKm = 30 } },
+                new PriceCategory { PriceCategoryName = "Category 2", ShipRates = new ShipRates { PerKg = 15, PerCubicMeter = 25, PerKm = 35 } },
+                new PriceCategory { PriceCategoryName = "Category 3", ShipRates = new ShipRates { PerKg = 20, PerCubicMeter = 30, PerKm = 40 } }
             };
-            context.PriceCategories.AddRange(priceCategories);  
+            context.PriceCategories.AddRange(priceCategories);
 
-            var companies = new Company []
+            var companies = new Company[]
             {
                 new Company { CompanyName = "Company 1", PriceCategory = priceCategories.Single(pc => pc.PriceCategoryName == "Category 1") },
-                
+
                 new Company { CompanyName = "Company 2", PriceCategory = priceCategories.Single(pc => pc.PriceCategoryName == "Category 2") },
 
                 new Company { CompanyName = "Company 3", PriceCategory = priceCategories.Single(pc => pc.PriceCategoryName == "Category 3") }
-            };       
+            };
             context.Companies.AddRange(companies);
 
             context.SaveChanges();

@@ -17,21 +17,21 @@ namespace WebApi.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var shipRates = _context.ShipRates.ToList();
-            return Ok(shipRates);
+            var listOfShipRates = _context.ShipRates.ToList();
+            return Ok(listOfShipRates);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var shipRate = _context.ShipRates.Find(id);
+            var shipRates = _context.ShipRates.Find(id);
 
-            if (shipRate == null)
+            if (shipRates == null)
             {
                 return NotFound();
             }
 
-            return Ok(shipRate);
+            return Ok(shipRates);
         }
     }
 }

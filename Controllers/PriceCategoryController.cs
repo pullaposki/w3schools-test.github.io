@@ -1,28 +1,30 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Data;
+using WebApi.Interfaces;
+using WebApi.Mappers;
 
 namespace WebApi.Controllers
 {
     [Route("api/priceCategory"), ApiController]
-    public class PriceCategoryController: ControllerBase
+    public class PriceCategoryController(ApplicationDbContext context, IPriceCategoryRepo priceCategoryRepo) : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        public PriceCategoryController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ApplicationDbContext _context = context;
+        private readonly IPriceCategoryRepo _priceCategoryRepo = priceCategoryRepo;
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var priceCategories = _context.PriceCategories.ToList();
-            return Ok(priceCategories);
+            var priceCategories = await _priceCategoryRepo.GetAllAsync();
+
+            var priceCategoriesDto = priceCategories.Select(pc => pc.ToResponseDto());
+
+            return Ok(priceCategoriesDto);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var priceCategory = _context.PriceCategories.Find(id);
+            var priceCategory = await _priceCategoryRepo.GetById(id);
 
             if (priceCategory == null)
             {
@@ -31,6 +33,6 @@ namespace WebApi.Controllers
 
             return Ok(priceCategory);
         }
-        
+
     }
 }

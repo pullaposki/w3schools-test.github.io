@@ -1,4 +1,4 @@
-using WebApi.Dtos.Company;
+using WebApi.Dtos;
 using WebApi.Models;
 
 namespace WebApi.Mappers

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WebApi.Data;
-using WebApi.Dtos.Company;
+using WebApi.Dtos;
 using WebApi.Interfaces;
 using WebApi.Models;
 
@@ -31,7 +31,7 @@ namespace WebApi.Repos
         {
             var existingModel = await _context.Companies.FirstOrDefaultAsync(c => c.CompanyId == id);
 
-            if(existingModel == null) return null;
+            if (existingModel == null) return null;
 
             existingModel.CompanyName = updateDto.CompanyName;
             existingModel.PriceCategoryId = updateDto.PriceCategoryId;
@@ -45,7 +45,7 @@ namespace WebApi.Repos
         {
             var companyModel = await _context.Companies.FirstOrDefaultAsync(c => c.CompanyId == id);
 
-            if(companyModel == null) return null;
+            if (companyModel == null) return null;
 
             _context.Companies.Remove(companyModel);
 
