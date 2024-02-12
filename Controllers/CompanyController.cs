@@ -11,7 +11,7 @@ namespace WebApi.Controllers
     {
         private readonly ApplicationDbContext _context = context;
         private readonly ICompanyRepo _companyRepo = companyRepo;
-        
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -37,7 +37,11 @@ namespace WebApi.Controllers
             var companyModel = createDto.ToModel();
             await _companyRepo.CreateAsync(companyModel);
 
-            return CreatedAtAction(nameof(GetById), new { id = companyModel.CompanyId }, companyModel.ToResponseDto());
+            return CreatedAtAction(
+                nameof(GetById),
+                new { id = companyModel.CompanyId },
+                companyModel.ToResponseDto()
+            );
         }
 
         [HttpPut]

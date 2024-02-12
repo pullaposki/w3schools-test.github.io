@@ -1,37 +1,44 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Data;
+using WebApi.Interfaces;
+using WebApi.Models;
 
 namespace WebApi.Controllers
 {
 
     [Route("api/shipRate"), ApiController]
-    public class ShipRateController : ControllerBase
+    public class ShipRateController(IShipRatesRepo repo, ApplicationDbContext context) : ControllerBase
     {
-        readonly ApplicationDbContext _context;
-
-        public ShipRateController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ApplicationDbContext _context = context;
+        private readonly IShipRatesRepo _repo = repo;
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var listOfShipRates = _context.ShipRates.ToList();
+            var listOfShipRates = await _repo.GetAllAsync();
             return Ok(listOfShipRates);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var shipRates = _context.ShipRates.Find(id);
+            var result = await _repo.GetByIdAsync(id);
 
-            if (shipRates == null)
+            if (result == null)
             {
                 return NotFound();
             }
 
-            return Ok(shipRates);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] ShipRates model)
+        {
+            var result = await _repo.CreateAsync(model);
+            return CreatedAtAction(
+                nameof(GetById),
+                new { id = result.ShipRatesId }, result);
         }
     }
 }

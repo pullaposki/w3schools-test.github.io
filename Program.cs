@@ -21,6 +21,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddScoped<ICompanyRepo, CompanyRepo>();
 builder.Services.AddScoped<IPriceCategoryRepo, PriceCategoryRepo>();
+builder.Services.AddScoped<IShipRatesRepo, ShipRatesRepo>();
 
 var app = builder.Build();
 

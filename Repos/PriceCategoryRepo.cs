@@ -10,9 +10,13 @@ namespace WebApi.Repos
     {
         private readonly ApplicationDbContext _context = context;
 
-        public Task<PriceCategory?> CreateAsync(PriceCategory priceCategoryModel)
+
+
+        public async Task<PriceCategory> CreateAsync(PriceCategory priceCategoryModel)
         {
-            throw new NotImplementedException();
+            await _context.PriceCategories.AddAsync(priceCategoryModel);
+            await _context.SaveChangesAsync();
+            return priceCategoryModel;
         }
 
         public Task<PriceCategory?> DeleteAsync(int id)
@@ -22,17 +26,34 @@ namespace WebApi.Repos
 
         public async Task<List<PriceCategory>> GetAllAsync()
         {
+            await UpdatePriceCategoriesShipRates();
+
             return await _context.PriceCategories.ToListAsync();
         }
 
-        public async Task<PriceCategory?> GetById(int id)
+        public async Task<PriceCategory?> GetByIdAsync(int id)
         {
+            await UpdatePriceCategoriesShipRates();
+
             return await _context.PriceCategories.FindAsync(id);
         }
 
-        public Task<PriceCategory?> UpdateAsync(int id, PriceCategoryDtos.AnUpdatePriceCategoryRequestDto anUpdateDto)
+        public Task<PriceCategory?> UpdateAsync(int id, AnUpdatePriceCategoryRequestDto anUpdateDto)
         {
             throw new NotImplementedException();
+        }
+
+        private async Task UpdatePriceCategoriesShipRates()
+        {
+            var shipRates = await _context.ShipRates.ToListAsync();
+            var priceCategories = await _context.PriceCategories.ToListAsync();
+
+            for (int i = 0; i < shipRates.Count; i++)
+            {
+                priceCategories[i].ShipRatesId = shipRates[i].ShipRatesId;
+            }
+
+            await _context.SaveChangesAsync();
         }
     }
 }

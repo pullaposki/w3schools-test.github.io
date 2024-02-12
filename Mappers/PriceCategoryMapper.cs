@@ -1,5 +1,5 @@
 using WebApi.Models;
-using static WebApi.Dtos.PriceCategoryDtos;
+using WebApi.Dtos;
 
 namespace WebApi.Mappers
 {

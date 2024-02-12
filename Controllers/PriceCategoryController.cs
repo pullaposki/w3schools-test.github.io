@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebApi.Data;
 using WebApi.Interfaces;
 using WebApi.Mappers;
+using WebApi.Dtos;
 
 namespace WebApi.Controllers
 {
@@ -24,7 +25,7 @@ namespace WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var priceCategory = await _priceCategoryRepo.GetById(id);
+            var priceCategory = await _priceCategoryRepo.GetByIdAsync(id);
 
             if (priceCategory == null)
             {
@@ -32,6 +33,19 @@ namespace WebApi.Controllers
             }
 
             return Ok(priceCategory);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] ACreatePriceCategoryRequestDto createDto)
+        {
+            var priceCategoryModel = createDto.ToModel();
+            await _priceCategoryRepo.CreateAsync(priceCategoryModel);
+
+            return CreatedAtAction(
+                nameof(GetById),
+                 new { id = priceCategoryModel.PriceCategoryId },
+                    priceCategoryModel.ToResponseDto()
+                );
         }
 
     }
