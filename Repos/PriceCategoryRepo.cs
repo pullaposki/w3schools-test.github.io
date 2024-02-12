@@ -16,12 +16,20 @@ namespace WebApi.Repos
         {
             await _context.PriceCategories.AddAsync(priceCategoryModel);
             await _context.SaveChangesAsync();
+
             return priceCategoryModel;
         }
 
-        public Task<PriceCategory?> DeleteAsync(int id)
+        public async Task<PriceCategory?> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var existingModel = await _context.PriceCategories.FindAsync(id);
+
+            if (existingModel == null) return null;
+
+            _context.PriceCategories.Remove(existingModel);
+            await _context.SaveChangesAsync();
+
+            return existingModel;
         }
 
         public async Task<List<PriceCategory>> GetAllAsync()
@@ -38,9 +46,17 @@ namespace WebApi.Repos
             return await _context.PriceCategories.FindAsync(id);
         }
 
-        public Task<PriceCategory?> UpdateAsync(int id, AnUpdatePriceCategoryRequestDto anUpdateDto)
+        public async Task<PriceCategory?> UpdateAsync(int id, AnUpdatePriceCategoryRequestDto requestDto)
         {
-            throw new NotImplementedException();
+            var existingModel = await _context.PriceCategories.FirstOrDefaultAsync(pc => pc.PriceCategoryId == id);
+
+            if(existingModel == null) return null;
+
+            existingModel.PriceCategoryName = requestDto.PriceCategoryName;
+
+            await _context.SaveChangesAsync();
+
+            return existingModel;
         }
 
         private async Task UpdatePriceCategoriesShipRates()

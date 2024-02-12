@@ -10,12 +10,23 @@ namespace WebApi.Controllers
     public class PriceCategoryController(ApplicationDbContext context, IPriceCategoryRepo priceCategoryRepo) : ControllerBase
     {
         private readonly ApplicationDbContext _context = context;
-        private readonly IPriceCategoryRepo _priceCategoryRepo = priceCategoryRepo;
+        private readonly IPriceCategoryRepo _repo = priceCategoryRepo;
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            var selectedModel = await _repo.DeleteAsync(id);
+
+            if (selectedModel == null) return NotFound();
+
+            return NoContent();
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var priceCategories = await _priceCategoryRepo.GetAllAsync();
+            var priceCategories = await _repo.GetAllAsync();
 
             var priceCategoriesDto = priceCategories.Select(pc => pc.ToResponseDto());
 
@@ -25,7 +36,7 @@ namespace WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var priceCategory = await _priceCategoryRepo.GetByIdAsync(id);
+            var priceCategory = await _repo.GetByIdAsync(id);
 
             if (priceCategory == null)
             {
@@ -36,17 +47,27 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ACreatePriceCategoryRequestDto createDto)
+        public async Task<IActionResult> Create([FromBody] ACreatePriceCategoryRequestDto requestDto)
         {
-            var priceCategoryModel = createDto.ToModel();
-            await _priceCategoryRepo.CreateAsync(priceCategoryModel);
+            var model = requestDto.ToModel();
+            await _repo.CreateAsync(model);
 
             return CreatedAtAction(
                 nameof(GetById),
-                 new { id = priceCategoryModel.PriceCategoryId },
-                    priceCategoryModel.ToResponseDto()
+                 new { id = model.PriceCategoryId },
+                    model.ToResponseDto()
                 );
         }
 
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] AnUpdatePriceCategoryRequestDto requestDto)
+        {
+            var updatedModel = await _repo.UpdateAsync(id, requestDto);
+
+            if (updatedModel == null) return NotFound();
+
+            return Ok(updatedModel.ToResponseDto());
+        }
     }
 }

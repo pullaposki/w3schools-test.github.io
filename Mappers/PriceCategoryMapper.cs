@@ -21,7 +21,6 @@ namespace WebApi.Mappers
             return new PriceCategory
             {
                 PriceCategoryName = priceCategoryDto.PriceCategoryName,
-                ShipRates = priceCategoryDto.ShipRates
             };
         }
     }

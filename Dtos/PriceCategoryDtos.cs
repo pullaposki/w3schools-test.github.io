@@ -16,13 +16,11 @@ namespace WebApi.Dtos
     public class ACreatePriceCategoryRequestDto
     {
         public string PriceCategoryName { get; set; } = string.Empty;
-        public ShipRates ShipRates { get; set; } = new ShipRates();
     }
 
     public class AnUpdatePriceCategoryRequestDto
     {
         public string PriceCategoryName { get; set; } = string.Empty;
-        public ShipRates ShipRates { get; set; } = new ShipRates();
     }
 
 }

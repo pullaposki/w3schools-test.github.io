@@ -46,13 +46,13 @@ namespace WebApi.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] AnUpdateCompanyRequestDto updateDto)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] AnUpdateCompanyRequestDto requestDto)
         {
-            var companyModel = await _companyRepo.UpdateAsync(id, updateDto);
+            var updatedModel = await _companyRepo.UpdateAsync(id, requestDto);
 
-            if (companyModel == null) return NotFound();
+            if (updatedModel == null) return NotFound();
 
-            return Ok(companyModel.ToResponseDto());
+            return Ok(updatedModel.ToResponseDto());
         }
 
         [HttpDelete]

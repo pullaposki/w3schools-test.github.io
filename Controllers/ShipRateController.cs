@@ -35,7 +35,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ACreateShipRatesRequestDto reqDto)
+        public async Task<IActionResult> Create([FromBody]ACreateShipRatesRequestDto reqDto)
         {
             var model = reqDto.ToModel();
             var newShipRates = await _repo.CreateAsync(model);
@@ -47,7 +47,8 @@ namespace WebApi.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(int id, [FromBody] AnUpdateShipRatesRequestDto requestDto)
+        [Route("{id}")]
+        public async Task<IActionResult> Update([FromRoute]int id, [FromBody] AnUpdateShipRatesRequestDto requestDto)
         {
             var updatedModel = await _repo.UpdateAsync(id, requestDto);
 
@@ -57,7 +58,8 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete(int id)
+        [Route("{id}")]
+        public async Task<IActionResult> Delete([FromRoute]int id)
         {
             var deletedModel = await _repo.DeleteAsync(id);
 
