@@ -22,8 +22,6 @@ namespace WebApi.Dtos
 
     public class ACreateShipRatesRequestDto
     {
-        public int ShipRatesId { get; set; }
-
         [Column(TypeName = "decimal(18, 2)")]
         public decimal PerKg { get; set; }
 

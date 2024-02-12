@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Data;
+using WebApi.Dtos;
 using WebApi.Interfaces;
+using WebApi.Mappers;
 using WebApi.Models;
 
 namespace WebApi.Controllers
@@ -33,12 +35,15 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ShipRates model)
+        public async Task<IActionResult> Create([FromBody] ACreateShipRatesRequestDto reqDto)
         {
-            var result = await _repo.CreateAsync(model);
+            var model = reqDto.ToModel();
+            var newShipRates = await _repo.CreateAsync(model);
+
             return CreatedAtAction(
                 nameof(GetById),
-                new { id = result.ShipRatesId }, result);
+                new { id = newShipRates.ShipRatesId },
+                 newShipRates);
         }
     }
 }
