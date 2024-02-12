@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WebApi.Data;
+using WebApi.Dtos;
 using WebApi.Interfaces;
 using WebApi.Models;
 
@@ -16,9 +17,16 @@ namespace WebApi.Repos
             return model;
         }
 
-        public Task<ShipRates?> DeleteAsync(int id)
+        public async Task<ShipRates?> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var existingModel = await _context.ShipRates.FindAsync(id);
+
+            if (existingModel == null) return null;
+
+            _context.ShipRates.Remove(existingModel);
+            _context.SaveChanges();
+
+            return existingModel;
         }
 
         public async Task<List<ShipRates>> GetAllAsync()
@@ -31,9 +39,19 @@ namespace WebApi.Repos
             return await _context.ShipRates.FindAsync(id);
         }
 
-        public Task<ShipRates?> UpdateAsync(int id, ShipRates model)
+        public async Task<ShipRates?> UpdateAsync(int id, AnUpdateShipRatesRequestDto requestDto)
         {
-            throw new NotImplementedException();
+            var existingModel = await _context.ShipRates.FindAsync(id);
+
+            if (existingModel == null) return null;
+
+            existingModel.PerCubicMeter = requestDto.PerCubicMeter;
+            existingModel.PerKg = requestDto.PerCubicMeter;
+            existingModel.PerKm = requestDto.PerKm;
+
+            _context.SaveChanges();
+
+            return existingModel;
         }
     }
 }

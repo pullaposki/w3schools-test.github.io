@@ -45,5 +45,25 @@ namespace WebApi.Controllers
                 new { id = newShipRates.ShipRatesId },
                  newShipRates);
         }
+
+        [HttpPut]
+        public async Task<IActionResult> Update(int id, [FromBody] AnUpdateShipRatesRequestDto requestDto)
+        {
+            var updatedModel = await _repo.UpdateAsync(id, requestDto);
+
+            if (updatedModel == null) return NotFound();
+
+            return Ok(updatedModel.ToResponseDto());
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var deletedModel = await _repo.DeleteAsync(id);
+
+            if (deletedModel == null) return NotFound();
+
+            return NoContent();
+        }
     }
 }
