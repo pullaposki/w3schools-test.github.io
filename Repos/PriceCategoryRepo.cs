@@ -6,24 +6,40 @@ using WebApi.Models;
 
 namespace WebApi.Repos
 {
-    public class PriceCategoryRepo(ApplicationDbContext context) : IPriceCategoryRepo
+    public class PriceCategoryRepo : IPriceCategoryRepo
     {
-        private readonly ApplicationDbContext _context = context;
+        private readonly ApplicationDbContext _context;
 
-
+        public PriceCategoryRepo(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
         public async Task<PriceCategory> CreateAsync(PriceCategory model)
         {
-            //model.ShipRatesId = model.ShipRatesId;
-            var shipRatesExists = await _context.ShipRates.AnyAsync(sr => sr.ShipRatesId == model.ShipRatesId);
-
-            if (!shipRatesExists) throw new Exception("ShipRates does not exist");
+            await ValidateShipRatesExistence(model.ShipRatesId);
 
             await _context.PriceCategories.AddAsync(model);
             await _context.SaveChangesAsync();
             await UpdatePriceCategoriesShipRates();
 
             return model;
+        }
+
+        public async Task<PriceCategory?> UpdateAsync(int id, AnUpdatePriceCategoryRequestDto requestDto)
+        {
+            var existingModel = await _context.PriceCategories.FirstOrDefaultAsync(pc => pc.PriceCategoryId == id);
+            if (existingModel == null) throw new Exception("PriceCategory does not exist");
+
+            await ValidateShipRatesExistence(requestDto.ShipRatesId);
+
+            existingModel.PriceCategoryName = requestDto.PriceCategoryName;
+            existingModel.ShipRatesId = requestDto.ShipRatesId; // Update the ShipRatesId
+
+            await _context.SaveChangesAsync();
+            await UpdatePriceCategoriesShipRates();
+
+            return existingModel;
         }
 
         public async Task<PriceCategory?> DeleteAsync(int id)
@@ -52,20 +68,14 @@ namespace WebApi.Repos
             return await _context.PriceCategories.FindAsync(id);
         }
 
-        public async Task<PriceCategory?> UpdateAsync(int id, AnUpdatePriceCategoryRequestDto requestDto)
+        private async Task ValidateShipRatesExistence(int shipRatesId)
         {
-            var existingModel = await _context.PriceCategories.FirstOrDefaultAsync(pc => pc.PriceCategoryId == id);
-
-            if (existingModel == null) return null;
-
-            existingModel.PriceCategoryName = requestDto.PriceCategoryName;
-            existingModel.ShipRatesId = requestDto.ShipRatesId; // Update the ShipRatesId
-
-            await _context.SaveChangesAsync();
-
-            await UpdatePriceCategoriesShipRates();
-
-            return existingModel;
+            var shipRatesExists = await _context.ShipRates.AnyAsync(sr => sr.ShipRatesId == shipRatesId);
+            if (!shipRatesExists)
+            {
+                var availableIds = await _context.ShipRates.Select(sr => sr.ShipRatesId).ToListAsync();
+                throw new Exception($"ShipRates does not exist. Available ShipRates IDs are: {string.Join(", ", availableIds)}");
+            }
         }
 
         private async Task UpdatePriceCategoriesShipRates()

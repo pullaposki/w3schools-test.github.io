@@ -3,6 +3,7 @@ using WebApi.Data;
 using WebApi.Interfaces;
 using WebApi.Mappers;
 using WebApi.Dtos;
+using WebApi.Models;
 
 namespace WebApi.Controllers
 {
@@ -50,7 +51,15 @@ namespace WebApi.Controllers
         public async Task<IActionResult> Create([FromBody] ACreatePriceCategoryRequestDto requestDto)
         {
             var model = requestDto.ToModel();
-            await _repo.CreateAsync(model);
+
+            try
+            {
+                await _repo.CreateAsync(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
 
             return CreatedAtAction(
                 nameof(GetById),
@@ -63,7 +72,15 @@ namespace WebApi.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] AnUpdatePriceCategoryRequestDto requestDto)
         {
-            var updatedModel = await _repo.UpdateAsync(id, requestDto);
+            PriceCategory updatedModel;
+            try
+            {
+                updatedModel = await _repo.UpdateAsync(id, requestDto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
 
             if (updatedModel == null) return NotFound();
 
