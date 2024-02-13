@@ -17,6 +17,8 @@ namespace WebApi.Repos
             //model.ShipRatesId = model.ShipRatesId;
             var shipRatesExists = await _context.ShipRates.AnyAsync(sr => sr.ShipRatesId == model.ShipRatesId);
 
+            if (!shipRatesExists) throw new Exception("ShipRates does not exist");
+
             await _context.PriceCategories.AddAsync(model);
             await _context.SaveChangesAsync();
             await UpdatePriceCategoriesShipRates();
@@ -61,21 +63,10 @@ namespace WebApi.Repos
 
             await _context.SaveChangesAsync();
 
+            await UpdatePriceCategoriesShipRates();
+
             return existingModel;
         }
-
-        // public async Task<PriceCategory?> UpdateAsync(int id, AnUpdatePriceCategoryRequestDto requestDto)
-        // {
-        //     var existingModel = await _context.PriceCategories.FirstOrDefaultAsync(pc => pc.PriceCategoryId == id);
-
-        //     if (existingModel == null) return null;
-
-        //     existingModel.PriceCategoryName = requestDto.PriceCategoryName;
-
-        //     await _context.SaveChangesAsync();
-
-        //     return existingModel;
-        // }
 
         private async Task UpdatePriceCategoriesShipRates()
         {
