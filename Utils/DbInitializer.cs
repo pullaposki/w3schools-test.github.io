@@ -5,15 +5,14 @@ namespace WebApi.Utils
 {
     public class DbInitializer
     {
+
         public static void Initialize(ApplicationDbContext context)
         {
             context.Database.EnsureCreated();
 
-            // Check if the database has been seeded already
-            if (HasDbBeenSeeded(context))
-            {
-                return;
-            }
+            SeedEmployees(context);
+
+            if (HasDbBeenSeeded(context)) return;
 
             SeedDb(context);
         }
@@ -37,6 +36,33 @@ namespace WebApi.Utils
                 new Company { CompanyName = "Company 3", PriceCategory = priceCategories.Single(pc => pc.PriceCategoryName == "Category 3") }
             };
             context.Companies.AddRange(companies);
+
+
+            context.SaveChanges();
+        }
+
+        private static void SeedEmployees(ApplicationDbContext context)
+        {
+            // Check if there are any employees already
+            if (context.Employees.Any())
+            {
+                return;   // DB has been seeded
+            }
+
+            var employees = new Employee[]
+            {
+                new Employee { FirstName = "John", LastName = "Doe", Position = "Manager", CompanyId = 1 },
+                new Employee { FirstName = "Jane", LastName = "Doe", Position = "Developer", CompanyId = 1 },
+                new Employee { FirstName = "Alice", LastName = "Smith", Position = "Manager", CompanyId = 2 },
+                new Employee { FirstName = "Bob", LastName = "Johnson", Position = "Developer", CompanyId = 2 },
+                new Employee { FirstName = "Charlie", LastName = "Williams", Position = "Manager", CompanyId = 3 },
+                new Employee { FirstName = "David", LastName = "Brown", Position = "Developer", CompanyId = 3 },
+            };
+
+            foreach (Employee employee in employees)
+            {
+                context.Employees.Add(employee);
+            }
 
             context.SaveChanges();
         }

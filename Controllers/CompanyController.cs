@@ -10,22 +10,22 @@ namespace WebApi.Controllers
     public class CompanyController(ApplicationDbContext context, ICompanyRepo companyRepo) : ControllerBase
     {
         private readonly ApplicationDbContext _context = context;
-        private readonly ICompanyRepo _companyRepo = companyRepo;
+        private readonly ICompanyRepo _repo = companyRepo;
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var companies = await _companyRepo.GetAllAsync();
-            var companiesDto = companies.Select(c => c.ToResponseDto());
+            var companies = await _repo.GetAllAsync();
+            var responseDto = companies.Select(c => c.ToResponseDto());
 
-            return Ok(companiesDto);
+            return Ok(responseDto);
         }
 
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var company = await _companyRepo.GetByIdAsync(id);
+            var company = await _repo.GetByIdAsync(id);
             if (company == null) return NotFound();
 
             return Ok(company.ToResponseDto());
@@ -35,7 +35,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> Create([FromBody] ACreateCompanyRequestDto createDto)
         {
             var companyModel = createDto.ToModel();
-            await _companyRepo.CreateAsync(companyModel);
+            await _repo.CreateAsync(companyModel);
 
             return CreatedAtAction(
                 nameof(GetById),
@@ -48,7 +48,7 @@ namespace WebApi.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] AnUpdateCompanyRequestDto requestDto)
         {
-            var updatedModel = await _companyRepo.UpdateAsync(id, requestDto);
+            var updatedModel = await _repo.UpdateAsync(id, requestDto);
 
             if (updatedModel == null) return NotFound();
 
@@ -59,7 +59,7 @@ namespace WebApi.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var companyModel = await _companyRepo.DeleteAsync(id);
+            var companyModel = await _repo.DeleteAsync(id);
 
             if (companyModel == null) return NotFound();
 

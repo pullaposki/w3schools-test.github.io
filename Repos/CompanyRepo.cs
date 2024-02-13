@@ -17,7 +17,10 @@ namespace WebApi.Repos
 
         public async Task<Company?> GetByIdAsync(int id)
         {
-            return await _context.Companies.FindAsync(id);
+            //return await _context.Companies.FindAsync(id);
+            return await _context.Companies
+                .Include(c => c.Employees)
+                .FirstOrDefaultAsync(c => c.CompanyId == id);
         }
 
         public async Task<Company> CreateAsync(Company companyModel)
