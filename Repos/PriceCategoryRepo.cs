@@ -12,12 +12,16 @@ namespace WebApi.Repos
 
 
 
-        public async Task<PriceCategory> CreateAsync(PriceCategory priceCategoryModel)
+        public async Task<PriceCategory> CreateAsync(PriceCategory model)
         {
-            await _context.PriceCategories.AddAsync(priceCategoryModel);
-            await _context.SaveChangesAsync();
+            //model.ShipRatesId = model.ShipRatesId;
+            var shipRatesExists = await _context.ShipRates.AnyAsync(sr => sr.ShipRatesId == model.ShipRatesId);
 
-            return priceCategoryModel;
+            await _context.PriceCategories.AddAsync(model);
+            await _context.SaveChangesAsync();
+            await UpdatePriceCategoriesShipRates();
+
+            return model;
         }
 
         public async Task<PriceCategory?> DeleteAsync(int id)
@@ -50,14 +54,28 @@ namespace WebApi.Repos
         {
             var existingModel = await _context.PriceCategories.FirstOrDefaultAsync(pc => pc.PriceCategoryId == id);
 
-            if(existingModel == null) return null;
+            if (existingModel == null) return null;
 
             existingModel.PriceCategoryName = requestDto.PriceCategoryName;
+            existingModel.ShipRatesId = requestDto.ShipRatesId; // Update the ShipRatesId
 
             await _context.SaveChangesAsync();
 
             return existingModel;
         }
+
+        // public async Task<PriceCategory?> UpdateAsync(int id, AnUpdatePriceCategoryRequestDto requestDto)
+        // {
+        //     var existingModel = await _context.PriceCategories.FirstOrDefaultAsync(pc => pc.PriceCategoryId == id);
+
+        //     if (existingModel == null) return null;
+
+        //     existingModel.PriceCategoryName = requestDto.PriceCategoryName;
+
+        //     await _context.SaveChangesAsync();
+
+        //     return existingModel;
+        // }
 
         private async Task UpdatePriceCategoriesShipRates()
         {

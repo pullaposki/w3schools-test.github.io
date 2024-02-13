@@ -10,6 +10,6 @@ namespace WebApi.Models
         public int ShipRatesId { get; set; }
 
         // Navigation property for ShipRates lookup table
-        public ShipRates ShipRates { get; set; } = new ShipRates();
+        public ShipRates ShipRates { get; set; }
     }
 }
