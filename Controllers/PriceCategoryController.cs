@@ -72,7 +72,7 @@ namespace WebApi.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] AnUpdatePriceCategoryRequestDto requestDto)
         {
-            PriceCategory updatedModel;
+            PriceCategory? updatedModel;
             try
             {
                 updatedModel = await _repo.UpdateAsync(id, requestDto);

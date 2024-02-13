@@ -6,9 +6,11 @@ namespace WebApi.Models
         public string CompanyName { get; set; } = string.Empty;
 
         // Foreign key for PriceCategory
-         public int PriceCategoryId { get; set; }
+        public int PriceCategoryId { get; set; }
 
         // Navigation property for PriceCategory
-        public PriceCategory PriceCategory {get; set; } = new PriceCategory();
+        public PriceCategory PriceCategory { get; set; } = new PriceCategory();
+
+        public ICollection<Employee> Employees { get; set; } = new List<Employee>();
     }
 }
