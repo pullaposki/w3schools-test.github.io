@@ -3,20 +3,34 @@ using WebApi.Data;
 using WebApi.Dtos;
 using WebApi.Interfaces;
 using WebApi.Mappers;
+using WebApi.Services;
 
 namespace WebApi.Controllers
 {
     [Route("api/company"), ApiController]
-    public class CompanyController(ApplicationDbContext context, ICompanyRepo companyRepo) : ControllerBase
+    public class CompanyController : ControllerBase
     {
-        private readonly ApplicationDbContext _context = context;
-        private readonly ICompanyRepo _repo = companyRepo;
+        private readonly ApplicationDbContext _context;
+        private readonly ICompanyRepo _repo;
+        private readonly CompanyService _companyService;
+
+        public CompanyController(ApplicationDbContext context, ICompanyRepo companyRepo, CompanyService companyService)
+        {
+            _context = context;
+            _repo = companyRepo;
+            _companyService = companyService;
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var companies = await _repo.GetAllAsync();
+
+            if (companies == null) return NotFound();
+
             var responseDto = companies.Select(c => c.ToResponseDto());
+
+            if (!responseDto.Any()) return NotFound();
 
             return Ok(responseDto);
         }
@@ -34,35 +48,41 @@ namespace WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ACreateCompanyRequestDto createDto)
         {
-            // Model Validation
+            if (createDto == null)
+                return BadRequest(new { error = "Request body cannot be null." });
+
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
-
-            // Business logic validation
-            var priceCategory = _context.PriceCategories.Find(createDto.PriceCategoryId);
-
-            if (priceCategory == null)
+            try
             {
-                return BadRequest(new { error = "PriceCategory not found" });
+                var companyModel = await _companyService.CreateCompany(createDto);
+
+                await _repo.CreateAsync(companyModel);
+
+                return CreatedAtAction(
+                    nameof(GetById),
+                    new { id = companyModel.CompanyId },
+                    companyModel.ToResponseDto()
+                );
+            }
+            catch
+            {
+                return StatusCode(500, new { error = "An error occured while creating." });
             }
 
-            var companyModel = createDto.ToModel(priceCategory);
-            await _repo.CreateAsync(companyModel);
-
-            return CreatedAtAction(
-                nameof(GetById),
-                new { id = companyModel.CompanyId },
-                companyModel.ToResponseDto()
-            );
         }
 
         [HttpPut]
         [Route("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] AnUpdateCompanyRequestDto requestDto)
         {
+            if (requestDto == null)
+                return BadRequest(new { error = "Request body cannot be null." });
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var updatedModel = await _repo.UpdateAsync(id, requestDto);
 
             if (updatedModel == null) return NotFound();
@@ -73,7 +93,7 @@ namespace WebApi.Controllers
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
-        {
+        {           
             var companyModel = await _repo.DeleteAsync(id);
 
             if (companyModel == null) return NotFound();
