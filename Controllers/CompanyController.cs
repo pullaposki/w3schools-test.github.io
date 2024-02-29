@@ -3,7 +3,6 @@ using WebApi.Data;
 using WebApi.Dtos;
 using WebApi.Interfaces;
 using WebApi.Mappers;
-using WebApi.Services;
 
 namespace WebApi.Controllers
 {
@@ -12,9 +11,9 @@ namespace WebApi.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly ICompanyRepo _repo;
-        private readonly CompanyService _companyService;
+        private readonly ICompanyService _companyService;
 
-        public CompanyController(ApplicationDbContext context, ICompanyRepo companyRepo, CompanyService companyService)
+        public CompanyController(ApplicationDbContext context, ICompanyRepo companyRepo, ICompanyService companyService)
         {
             _context = context;
             _repo = companyRepo;
@@ -93,7 +92,7 @@ namespace WebApi.Controllers
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
-        {           
+        {
             var companyModel = await _repo.DeleteAsync(id);
 
             if (companyModel == null) return NotFound();
