@@ -16,5 +16,16 @@ namespace WebApi.Mappers
                 CompanyId = employeeModel.CompanyId
             };
         }
+
+        public static Employee ToModelFromACreateRequestDto(this ACreateEmployeeRequestDto createDto, int companyId)
+        {
+            return new Employee
+            {
+                FirstName = createDto.FirstName,
+                LastName = createDto.LastName,
+                Position = createDto.Position,
+                CompanyId = companyId
+            };
+        }
     }
 }

@@ -57,6 +57,9 @@ namespace WebApi.Repos
             return companyModel;
         }
 
-
+        public Task<bool> ExistsAsync(int id)
+        {
+            return _context.Companies.AnyAsync(c => c.CompanyId == id);
+        }
     }
 }

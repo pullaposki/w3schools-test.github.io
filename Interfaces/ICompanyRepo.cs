@@ -7,6 +7,6 @@ namespace WebApi.Interfaces
     {
         Task<Company?> UpdateAsync(int id, AnUpdateCompanyRequestDto updateDto);
         Task<Company?> DeleteAsync(int id);
-
+        Task<bool> ExistsAsync(int id);
     }
 }

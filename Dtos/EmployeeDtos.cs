@@ -7,5 +7,14 @@ namespace WebApi.Dtos
         public string LastName { get; set; } = string.Empty;
         public string Position { get; set; } = string.Empty;
         public int CompanyId { get; set; }
+
+    }
+
+    public class ACreateEmployeeRequestDto
+    {
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string Position { get; set; } = string.Empty;
+        //public int CompanyId { get; set; }
     }
 }

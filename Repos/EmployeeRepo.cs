@@ -11,7 +11,9 @@ namespace WebApi.Repos
 
         public async Task<Employee> CreateAsync(Employee model)
         {
-            throw new NotImplementedException();
+            await _context.Employees.AddAsync(model);
+            await _context.SaveChangesAsync();
+            return model;
         }
 
         public async Task<List<Employee>> GetAllAsync()
