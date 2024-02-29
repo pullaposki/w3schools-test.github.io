@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using WebApi.Data;
 using WebApi.Dtos;
 using WebApi.Models;
 
@@ -15,12 +17,19 @@ namespace WebApi.Mappers
             };
         }
 
-        public static Company ToModel(this ACreateCompanyRequestDto companyDto)
+        public static Company ToModel(this ACreateCompanyRequestDto companyDto, ApplicationDbContext context)
         {
+            var priceCategory = context.PriceCategories.Find(companyDto.PriceCategoryId);
+
+            if (priceCategory == null)
+            {
+                throw new ArgumentException("PriceCategory not found");
+            }
+
             return new Company
             {
                 CompanyName = companyDto.CompanyName,
-                PriceCategoryId = companyDto.PriceCategoryId
+                PriceCategory = priceCategory
             };
         }
     }

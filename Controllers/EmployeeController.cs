@@ -21,7 +21,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+            public async Task<IActionResult> GetById(int id)
         {
             var employee = await _repo.GetByIdAsync(id);
             if (employee == null) return NotFound();

@@ -34,14 +34,25 @@ namespace WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ACreateCompanyRequestDto createDto)
         {
-            var companyModel = createDto.ToModel();
-            await _repo.CreateAsync(companyModel);
+            try
+            {
+                var companyModel = createDto.ToModel(_context);
+                await _repo.CreateAsync(companyModel);
 
-            return CreatedAtAction(
-                nameof(GetById),
-                new { id = companyModel.CompanyId },
-                companyModel.ToResponseDto()
-            );
+                return CreatedAtAction(
+                    nameof(GetById),
+                    new { id = companyModel.CompanyId },
+                    companyModel.ToResponseDto()
+                );
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "An error occurred while creating the company" });
+            }
         }
 
         [HttpPut]
