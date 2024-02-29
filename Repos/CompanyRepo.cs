@@ -15,12 +15,18 @@ namespace WebApi.Repos
             return await _context.Companies.ToListAsync();
         }
 
-        public async Task<Company?> GetByIdAsync(int id)
+        public async Task<Company?> GetByIdWithEmployeesAsync(int id, bool includeEmployees = false)
         {
-            //return await _context.Companies.FindAsync(id);
-            return await _context.Companies
-                .Include(c => c.Employees)
-                .FirstOrDefaultAsync(c => c.CompanyId == id);
+            if (includeEmployees)
+            {
+                return await _context.Companies
+                    .Include(c => c.Employees)
+                    .FirstOrDefaultAsync(c => c.CompanyId == id);
+            }
+            else
+            {
+                return await _context.Companies.FindAsync(id);
+            }
         }
 
         public async Task<Company> CreateAsync(Company companyModel)

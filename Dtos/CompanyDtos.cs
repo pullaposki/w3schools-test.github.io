@@ -10,6 +10,7 @@ namespace WebApi.Dtos
         public string CompanyName { get; set; } = string.Empty;
 
         public int PriceCategoryId { get; set; }
+        public List<AnEmployeeResponseDto> Employees { get; set; } = new List<AnEmployeeResponseDto>();
     }
 
     // Request

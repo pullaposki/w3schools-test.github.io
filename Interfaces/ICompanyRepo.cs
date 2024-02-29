@@ -7,6 +7,7 @@ namespace WebApi.Interfaces
     {
         Task<Company?> UpdateAsync(int id, AnUpdateCompanyRequestDto updateDto);
         Task<Company?> DeleteAsync(int id);
+        Task<Company?> GetByIdWithEmployeesAsync(int id, bool includeEmployees = false);
         Task<bool> ExistsAsync(int id);
     }
 }

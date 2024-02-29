@@ -36,9 +36,9 @@ namespace WebApi.Controllers
 
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetByIdWithEmployeesAsync(int id)
         {
-            var company = await _repo.GetByIdAsync(id);
+            var company = await _repo.GetByIdWithEmployeesAsync(id, includeEmployees: true);
             if (company == null) return NotFound();
 
             return Ok(company.ToResponseDto());
@@ -60,7 +60,7 @@ namespace WebApi.Controllers
                 await _repo.CreateAsync(companyModel);
 
                 return CreatedAtAction(
-                    nameof(GetById),
+                    nameof(GetByIdWithEmployeesAsync),
                     new { id = companyModel.CompanyId },
                     companyModel.ToResponseDto()
                 );

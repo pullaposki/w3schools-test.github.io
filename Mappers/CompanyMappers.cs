@@ -7,13 +7,14 @@ namespace WebApi.Mappers
 {
     public static class CompanyMappers
     {
-        public static ACompanyResponseDto ToResponseDto(this Company companyModel)
+        public static ACompanyResponseDto ToResponseDto(this Company model)
         {
             return new ACompanyResponseDto
             {
-                CompanyId = companyModel.CompanyId,
-                CompanyName = companyModel.CompanyName,
-                PriceCategoryId = companyModel.PriceCategoryId
+                CompanyId = model.CompanyId,
+                CompanyName = model.CompanyName,
+                PriceCategoryId = model.PriceCategoryId,
+                Employees = model.Employees.Select(e => e.ToResponseDto()).ToList()
             };
         }
 
