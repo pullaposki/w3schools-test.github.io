@@ -35,7 +35,7 @@ namespace WebApi.Controllers
         }
 
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetByIdWithEmployeesAsync(int id)
         {
             var company = await _repo.GetByIdWithEmployeesAsync(id, includeEmployees: true);
@@ -73,7 +73,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] AnUpdateCompanyRequestDto requestDto)
         {
             if (requestDto == null)
@@ -90,7 +90,7 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var companyModel = await _repo.DeleteAsync(id);

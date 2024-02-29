@@ -21,7 +21,7 @@ namespace WebApi.Controllers
             return Ok(listOfShipRates);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
             var result = await _repo.GetByIdAsync(id);
@@ -35,7 +35,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody]ACreateShipRatesRequestDto reqDto)
+        public async Task<IActionResult> Create([FromBody] ACreateShipRatesRequestDto reqDto)
         {
             var model = reqDto.ToModel();
             var newShipRates = await _repo.CreateAsync(model);
@@ -47,8 +47,8 @@ namespace WebApi.Controllers
         }
 
         [HttpPut]
-        [Route("{id}")]
-        public async Task<IActionResult> Update([FromRoute]int id, [FromBody] AnUpdateShipRatesRequestDto requestDto)
+        [Route("{id:int}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] AnUpdateShipRatesRequestDto requestDto)
         {
             var updatedModel = await _repo.UpdateAsync(id, requestDto);
 
@@ -58,8 +58,8 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}")]
-        public async Task<IActionResult> Delete([FromRoute]int id)
+        [Route("{id:int}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var deletedModel = await _repo.DeleteAsync(id);
 

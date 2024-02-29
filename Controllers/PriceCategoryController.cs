@@ -14,7 +14,7 @@ namespace WebApi.Controllers
         private readonly IPriceCategoryRepo _repo = priceCategoryRepo;
 
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var selectedModel = await _repo.DeleteAsync(id);
@@ -34,7 +34,7 @@ namespace WebApi.Controllers
             return Ok(priceCategoriesDto);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
             var priceCategory = await _repo.GetByIdAsync(id);
@@ -69,7 +69,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] AnUpdatePriceCategoryRequestDto requestDto)
         {
             PriceCategory? updatedModel;

@@ -29,7 +29,7 @@ namespace WebApi.Controllers
             return Ok(responseDto);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
             var employee = await _repo.GetByIdAsync(id);
@@ -38,7 +38,7 @@ namespace WebApi.Controllers
             return Ok(employee.ToResponseDto());
         }
 
-        [HttpPost("{companyId}")]
+        [HttpPost("{companyId:int}")]
         public async Task<IActionResult> Create([FromRoute] int companyId, ACreateEmployeeRequestDto createReqDto)
         {
             if (!await _companyRepo.ExistsAsync(companyId))
@@ -52,12 +52,12 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             var employee = await _repo.DeleteAsync(id);
-            
-            if (employee == null) 
+
+            if (employee == null)
                 return NotFound();
 
             return Ok(employee.ToResponseDto());
