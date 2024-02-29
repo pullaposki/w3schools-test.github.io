@@ -17,15 +17,8 @@ namespace WebApi.Mappers
             };
         }
 
-        public static Company ToModel(this ACreateCompanyRequestDto companyDto, ApplicationDbContext context)
+        public static Company ToModel(this ACreateCompanyRequestDto companyDto, PriceCategory priceCategory)
         {
-            var priceCategory = context.PriceCategories.Find(companyDto.PriceCategoryId);
-
-            if (priceCategory == null)
-            {
-                throw new ArgumentException("PriceCategory not found");
-            }
-
             return new Company
             {
                 CompanyName = companyDto.CompanyName,

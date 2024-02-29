@@ -34,25 +34,29 @@ namespace WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ACreateCompanyRequestDto createDto)
         {
-            try
+            // Model Validation
+            if (!ModelState.IsValid)
             {
-                var companyModel = createDto.ToModel(_context);
-                await _repo.CreateAsync(companyModel);
+                return BadRequest(ModelState);
+            }
 
-                return CreatedAtAction(
-                    nameof(GetById),
-                    new { id = companyModel.CompanyId },
-                    companyModel.ToResponseDto()
-                );
-            }
-            catch (ArgumentException ex)
+
+            // Business logic validation
+            var priceCategory = _context.PriceCategories.Find(createDto.PriceCategoryId);
+
+            if (priceCategory == null)
             {
-                return BadRequest(new { error = ex.Message });
+                return BadRequest(new { error = "PriceCategory not found" });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { error = "An error occurred while creating the company" });
-            }
+
+            var companyModel = createDto.ToModel(priceCategory);
+            await _repo.CreateAsync(companyModel);
+
+            return CreatedAtAction(
+                nameof(GetById),
+                new { id = companyModel.CompanyId },
+                companyModel.ToResponseDto()
+            );
         }
 
         [HttpPut]
