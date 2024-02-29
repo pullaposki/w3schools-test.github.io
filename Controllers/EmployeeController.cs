@@ -50,5 +50,17 @@ namespace WebApi.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = employeeModel.EmployeeId }, employeeModel.ToResponseDto());
         }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            var employee = await _repo.DeleteAsync(id);
+            
+            if (employee == null) 
+                return NotFound();
+
+            return Ok(employee.ToResponseDto());
+        }
     }
 }

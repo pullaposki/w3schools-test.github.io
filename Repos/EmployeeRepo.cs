@@ -16,6 +16,20 @@ namespace WebApi.Repos
             return model;
         }
 
+        public async Task<Employee?> DeleteAsync(int id)
+        {
+            var model = await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeId == id);
+
+            if (model == null)
+                return null;
+
+            _context.Employees.Remove(model);
+
+            await _context.SaveChangesAsync();
+
+            return model;
+        }
+
         public async Task<List<Employee>> GetAllAsync()
         {
             return await _context.Employees.ToListAsync();
