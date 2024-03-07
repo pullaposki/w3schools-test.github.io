@@ -1,4 +1,5 @@
 using WebApi.Dtos;
+using WebApi.Helpers;
 using WebApi.Models;
 
 namespace WebApi.Interfaces
@@ -9,5 +10,7 @@ namespace WebApi.Interfaces
         Task<Company?> DeleteAsync(int id);
         Task<Company?> GetByIdWithEmployeesAsync(int id, bool includeEmployees = false);
         Task<bool> ExistsAsync(int id);
+        
+        Task<List<Company>> GetAllAsyncWithAQuery(QueryObject queryObject);
     }
 }

@@ -20,11 +20,12 @@ namespace WebApi.Mappers
 
         public static Company ToModel(this ACreateCompanyRequestDto companyDto, PriceCategory priceCategory)
         {
-            return new Company
+            var company = new Company
             {
                 CompanyName = companyDto.CompanyName,
                 PriceCategory = priceCategory
             };
+            return company;
         }
     }
 }

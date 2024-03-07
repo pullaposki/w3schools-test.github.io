@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WebApi.Data;
 using WebApi.Dtos;
+using WebApi.Helpers;
 using WebApi.Interfaces;
 using WebApi.Models;
 
@@ -66,6 +67,25 @@ namespace WebApi.Repos
         public Task<bool> ExistsAsync(int id)
         {
             return _context.Companies.AnyAsync(c => c.CompanyId == id);
+        }
+        
+        public async Task<List<Company>> GetAllAsyncWithAQuery(QueryObject queryObject)
+        {
+            var companies = _context.Companies
+                .Include(c => c.PriceCategory)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(queryObject.CompanyName))
+            {
+                companies = companies.Where(c => c.CompanyName.Contains(queryObject.CompanyName));
+            }
+
+            if (queryObject.CompanyId != null)
+            {
+                companies = companies.Where(c => c.CompanyId.Equals(queryObject.CompanyId));
+            }
+
+            return await companies.ToListAsync();
         }
     }
 }

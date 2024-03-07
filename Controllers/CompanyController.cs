@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Data;
 using WebApi.Dtos;
+using WebApi.Helpers;
 using WebApi.Interfaces;
 using WebApi.Mappers;
 
@@ -18,6 +19,20 @@ namespace WebApi.Controllers
             _context = context;
             _repo = companyRepo;
             _companyService = companyService;
+        }
+
+        [HttpGet("query")]
+        public async Task<IActionResult> GetAllWithQParams([FromQuery] QueryObject queryObject)
+        {
+            var companies = await _repo.GetAllAsyncWithAQuery(queryObject);
+            
+            if (companies == null) return NotFound();
+            
+            var responseDto = companies.Select(c => c.ToResponseDto());
+            
+            if (!responseDto.Any()) return NotFound();
+            
+            return Ok(responseDto);
         }
 
         [HttpGet]
@@ -47,9 +62,6 @@ namespace WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ACreateCompanyRequestDto createDto)
         {
-            if (createDto == null)
-                return BadRequest(new { error = "Request body cannot be null." });
-
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -59,8 +71,10 @@ namespace WebApi.Controllers
 
                 await _repo.CreateAsync(companyModel);
 
+                const string methodName = nameof(GetByIdWithEmployeesAsync);
+                
                 return CreatedAtAction(
-                    nameof(GetByIdWithEmployeesAsync),
+                    methodName,
                     new { id = companyModel.CompanyId },
                     companyModel.ToResponseDto()
                 );
@@ -69,7 +83,6 @@ namespace WebApi.Controllers
             {
                 return StatusCode(500, new { error = "An error occured while creating." });
             }
-
         }
 
         [HttpPut]

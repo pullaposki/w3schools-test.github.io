@@ -19,7 +19,6 @@ namespace WebApi.Dtos
     }
 
     // Request
-
     public class ACreateShipRatesRequestDto
     {
         [Column(TypeName = "decimal(18, 2)")]

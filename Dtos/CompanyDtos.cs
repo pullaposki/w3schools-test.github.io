@@ -7,6 +7,7 @@ namespace WebApi.Dtos
     {
         public int CompanyId { get; set; }
 
+        
         public string CompanyName { get; set; } = string.Empty;
 
         public int PriceCategoryId { get; set; }
@@ -14,7 +15,6 @@ namespace WebApi.Dtos
     }
 
     // Request
-
     public class ACreateCompanyRequestDto
     {
         [Required, StringLength(200)]
