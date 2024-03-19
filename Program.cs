@@ -24,27 +24,33 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddIdentity<AppUser, IdentityRole>(options => 
-        { options.Password.RequireDigit= true; options.Password.RequiredLength = 4;})
+builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
+        { options.Password.RequireDigit = true; options.Password.RequiredLength = 4; })
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-builder.Services.AddAuthentication(options => {
-        options.DefaultAuthenticateScheme = 
-        options.DefaultChallengeScheme = 
-        options.DefaultScheme = 
-        options.DefaultSignInScheme =
-        options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;})
-    .AddJwtBearer(options => {
-        options.TokenValidationParameters = new TokenValidationParameters{
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme =
+    options.DefaultChallengeScheme =
+    options.DefaultScheme =
+    options.DefaultSignInScheme =
+    options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
             ValidateIssuer = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidateAudience = true,
             ValidAudience = builder.Configuration["Jwt:Audience"],
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SigningKey"]))};
-        });
-   
-    
+            IssuerSigningKey = new SymmetricSecurityKey(
+                System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SigningKey"]))
+        };
+    });
+
+
 
 builder.Services.AddScoped<ICompanyRepo, CompanyRepo>();
 builder.Services.AddScoped<IPriceCategoryRepo, PriceCategoryRepo>();
