@@ -95,7 +95,12 @@ namespace WebApi.Repos
                 }
             }
 
-            return await companies.ToListAsync();
+            var skipNumber = (queryObject.PageNumber - 1) * queryObject.PageSize;
+
+            return await companies
+                .Skip(skipNumber)
+                .Take(queryObject.PageSize)
+                .ToListAsync();
         }
     }
 }
