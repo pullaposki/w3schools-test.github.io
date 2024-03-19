@@ -62,5 +62,20 @@ namespace WebApi.Controllers
 
             return Ok(employee.ToResponseDto());
         }
+
+        [HttpPut]
+        [Route("{id:int}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] AnUpdateEmployeeRequestDto updateReqDto)
+        {
+            var model = updateReqDto.ToModelFromAnUpdateRequestDto();
+
+            if (model == null) return BadRequest();
+            
+            var employee = await _repo.UpdateAsync(id, model);
+            
+            if (employee == null) return NotFound();
+            
+            return Ok(employee.ToResponseDto());
+        }
     }
 }

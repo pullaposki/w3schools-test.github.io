@@ -27,5 +27,15 @@ namespace WebApi.Mappers
                 CompanyId = companyId
             };
         }
+        
+        public static Employee ToModelFromAnUpdateRequestDto(this AnUpdateEmployeeRequestDto updateDto)
+        {
+            return new Employee
+            {
+                FirstName = updateDto.FirstName,
+                LastName = updateDto.LastName,
+                Position = updateDto.Position
+            };
+        }
     }
 }

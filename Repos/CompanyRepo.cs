@@ -68,7 +68,7 @@ namespace WebApi.Repos
         {
             return _context.Companies.AnyAsync(c => c.CompanyId == id);
         }
-        
+
         public async Task<List<Company>> GetAllAsyncWithAQuery(QueryObject queryObject)
         {
             var companies = _context.Companies
@@ -83,6 +83,16 @@ namespace WebApi.Repos
             if (queryObject.CompanyId != null)
             {
                 companies = companies.Where(c => c.CompanyId.Equals(queryObject.CompanyId));
+            }
+
+            if (!string.IsNullOrWhiteSpace(queryObject.SortBy))
+            {
+                if (queryObject.SortBy.Equals("companyName", StringComparison.OrdinalIgnoreCase))
+                {
+                    companies = queryObject.IsDecending ?
+                    companies.OrderByDescending(c => c.CompanyName) :
+                    companies.OrderBy(c => c.CompanyName);
+                }
             }
 
             return await companies.ToListAsync();

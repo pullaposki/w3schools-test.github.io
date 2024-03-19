@@ -1,3 +1,4 @@
+using WebApi.Dtos;
 using WebApi.Models;
 
 namespace WebApi.Interfaces
@@ -6,5 +7,6 @@ namespace WebApi.Interfaces
     {
         Task<Employee?> GetByIdAsync(int id);
         Task<Employee?> DeleteAsync(int id);
+        Task<Employee>? UpdateAsync(int id, Employee employee);
     }
 }
