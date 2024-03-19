@@ -50,13 +50,12 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
-
-
 builder.Services.AddScoped<ICompanyRepo, CompanyRepo>();
 builder.Services.AddScoped<IPriceCategoryRepo, PriceCategoryRepo>();
 builder.Services.AddScoped<IShipRatesRepo, ShipRatesRepo>();
 builder.Services.AddScoped<IEmployeeRepo, EmployeeRepo>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 

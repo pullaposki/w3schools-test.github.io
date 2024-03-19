@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Dtos;
+using WebApi.Interfaces;
 using WebApi.Models;
 
 namespace WebApi.Controllers
@@ -10,10 +11,12 @@ namespace WebApi.Controllers
     public class AccountController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly ITokenService _tokenService;
 
-        public AccountController(UserManager<AppUser> userManager)
+        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService)
         {
             _userManager = userManager;
+            _tokenService = tokenService;
         }
 
         [HttpPost("register")]
@@ -36,11 +39,16 @@ namespace WebApi.Controllers
                     var roleResult = await _userManager.AddToRoleAsync(appUser, "User");
                     if (!roleResult.Succeeded) return BadRequest("Failed to add user to role");
 
-                    return Ok("User created successfully");
+                    return Ok(
+                        new NewUserDto
+                        {
+                            UserName = appUser.UserName,
+                            Email = appUser.Email,
+                            Token = _tokenService.CreateToken(appUser)
+                        });
                 }
 
                 return BadRequest(createUser.Errors);
-
             }
             catch (Exception ex)
             {
