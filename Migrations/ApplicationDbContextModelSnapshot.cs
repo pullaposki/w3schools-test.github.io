@@ -51,13 +51,13 @@ namespace WebApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "66c7aaf6-b156-40c4-81e3-46bb3e0e1959",
+                            Id = "5a678613-13a3-461b-9d41-70b365d90a3c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "b2e45505-4757-42d4-b006-04ac6e083fe4",
+                            Id = "ed6b7b27-3bf4-43ad-95fc-6af83cc18652",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -234,6 +234,21 @@ namespace WebApi.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("WebApi.Models.AppUserCompany", b =>
+                {
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AppUserId", "CompanyId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("AppUserCompanies");
+                });
+
             modelBuilder.Entity("WebApi.Models.Company", b =>
                 {
                     b.Property<int>("CompanyId")
@@ -381,6 +396,25 @@ namespace WebApi.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("WebApi.Models.AppUserCompany", b =>
+                {
+                    b.HasOne("WebApi.Models.AppUser", "AppUser")
+                        .WithMany("AppUserCompanies")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebApi.Models.Company", "Company")
+                        .WithMany("AppUserCompanies")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Company");
+                });
+
             modelBuilder.Entity("WebApi.Models.Company", b =>
                 {
                     b.HasOne("WebApi.Models.PriceCategory", "PriceCategory")
@@ -414,8 +448,15 @@ namespace WebApi.Migrations
                     b.Navigation("ShipRates");
                 });
 
+            modelBuilder.Entity("WebApi.Models.AppUser", b =>
+                {
+                    b.Navigation("AppUserCompanies");
+                });
+
             modelBuilder.Entity("WebApi.Models.Company", b =>
                 {
+                    b.Navigation("AppUserCompanies");
+
                     b.Navigation("Employees");
                 });
 #pragma warning restore 612, 618

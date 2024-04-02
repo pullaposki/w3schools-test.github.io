@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace WebApi.Migrations
 {
     /// <inheritdoc />
-    public partial class Identity : Migration
+    public partial class AppUserCompanyManyToMany : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,6 +50,21 @@ namespace WebApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ShipRates",
+                columns: table => new
+                {
+                    ShipRatesId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PerKg = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PerCubicMeter = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PerKm = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShipRates", x => x.ShipRatesId);
                 });
 
             migrationBuilder.CreateTable(
@@ -156,6 +173,106 @@ namespace WebApi.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "PriceCategories",
+                columns: table => new
+                {
+                    PriceCategoryId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PriceCategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShipRatesId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PriceCategories", x => x.PriceCategoryId);
+                    table.ForeignKey(
+                        name: "FK_PriceCategories_ShipRates_ShipRatesId",
+                        column: x => x.ShipRatesId,
+                        principalTable: "ShipRates",
+                        principalColumn: "ShipRatesId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Companies",
+                columns: table => new
+                {
+                    CompanyId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PriceCategoryId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Companies", x => x.CompanyId);
+                    table.ForeignKey(
+                        name: "FK_Companies_PriceCategories_PriceCategoryId",
+                        column: x => x.PriceCategoryId,
+                        principalTable: "PriceCategories",
+                        principalColumn: "PriceCategoryId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppUserCompanies",
+                columns: table => new
+                {
+                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CompanyId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppUserCompanies", x => new { x.AppUserId, x.CompanyId });
+                    table.ForeignKey(
+                        name: "FK_AppUserCompanies_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AppUserCompanies_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "CompanyId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Employees",
+                columns: table => new
+                {
+                    EmployeeId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Position = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CompanyId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Employees", x => x.EmployeeId);
+                    table.ForeignKey(
+                        name: "FK_Employees_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "CompanyId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "5a678613-13a3-461b-9d41-70b365d90a3c", null, "Admin", "ADMIN" },
+                    { "ed6b7b27-3bf4-43ad-95fc-6af83cc18652", null, "User", "USER" }
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppUserCompanies_CompanyId",
+                table: "AppUserCompanies",
+                column: "CompanyId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -194,11 +311,29 @@ namespace WebApi.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Companies_PriceCategoryId",
+                table: "Companies",
+                column: "PriceCategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Employees_CompanyId",
+                table: "Employees",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PriceCategories_ShipRatesId",
+                table: "PriceCategories",
+                column: "ShipRatesId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AppUserCompanies");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -215,10 +350,22 @@ namespace WebApi.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Employees");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Companies");
+
+            migrationBuilder.DropTable(
+                name: "PriceCategories");
+
+            migrationBuilder.DropTable(
+                name: "ShipRates");
         }
     }
 }

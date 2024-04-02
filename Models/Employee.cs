@@ -1,5 +1,8 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace WebApi.Models
 {
+    [Table("Employees")]
     public class Employee
     {
         public int EmployeeId { get; set; }

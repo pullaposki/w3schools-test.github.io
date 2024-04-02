@@ -1,5 +1,8 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace WebApi.Models
 {
+    [Table("PriceCategories")]
     public class PriceCategory
     {
         public int PriceCategoryId { get; set; }

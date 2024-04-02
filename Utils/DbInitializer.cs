@@ -9,12 +9,11 @@ namespace WebApi.Utils
         public static void Initialize(ApplicationDbContext context)
         {
             context.Database.EnsureCreated();
-
-            SeedEmployees(context);
-
             if (HasDbBeenSeeded(context)) return;
 
             SeedDb(context);
+            SeedAppUserCompanies(context);
+            SeedEmployees(context);
         }
 
         private static void SeedDb(ApplicationDbContext context)
@@ -36,7 +35,33 @@ namespace WebApi.Utils
                 new Company { CompanyName = "Company 3", PriceCategory = priceCategories.Single(pc => pc.PriceCategoryName == "Category 3") }
             };
             context.Companies.AddRange(companies);
+            
 
+
+            context.SaveChanges();
+        }
+        
+        private static void SeedAppUserCompanies(ApplicationDbContext context)
+        {
+            // Check if there are any app user companies already
+            if (context.AppUserCompanies.Any())
+            {
+                return;   // DB has been seeded
+            }
+
+            var appUserCompanies = new AppUserCompany[]
+            {
+                new AppUserCompany { AppUserId = "1", CompanyId = 1 },
+                new AppUserCompany { AppUserId = "1", CompanyId = 2 },
+                new AppUserCompany { AppUserId = "2", CompanyId = 2 },
+                new AppUserCompany { AppUserId = "2", CompanyId = 3 },
+                new AppUserCompany { AppUserId = "3", CompanyId = 3 },
+            };
+
+            foreach (AppUserCompany appUserCompany in appUserCompanies)
+            {
+                context.AppUserCompanies.Add(appUserCompany);
+            }
 
             context.SaveChanges();
         }

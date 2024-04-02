@@ -54,7 +54,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
-        { options.Password.RequireDigit = true; options.Password.RequiredLength = 4; })
+        { options.Password.RequireDigit = false; options.Password.RequiredLength = 4; })
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddAuthentication(options =>
@@ -85,6 +85,7 @@ builder.Services.AddScoped<IShipRatesRepo, ShipRatesRepo>();
 builder.Services.AddScoped<IEmployeeRepo, EmployeeRepo>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IAppUserCompanyRepo, AppUserCompanyRepo>();
 
 var app = builder.Build();
 
