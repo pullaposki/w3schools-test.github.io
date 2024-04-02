@@ -26,4 +26,23 @@ public class AppUserCompanyRepo: IAppUserCompanyRepo
             }).ToListAsync();
 
     }
+
+    public async Task<AppUserCompany> CreateAsync(AppUserCompany appUserCompany)
+    {
+        await _context.AppUserCompanies.AddAsync(appUserCompany);
+        await _context.SaveChangesAsync();
+        return appUserCompany;
+    }
+
+    public async Task<AppUserCompany> DeleteAsync(int companyId, AppUser appUser)
+    {
+        var appUserCompanyModel = await _context.AppUserCompanies
+            .FirstOrDefaultAsync(auc => auc.CompanyId == companyId && auc.AppUserId == appUser.Id);
+
+        if (appUserCompanyModel == null) return null;
+        
+        _context.AppUserCompanies.Remove(appUserCompanyModel);
+        await _context.SaveChangesAsync();
+        return appUserCompanyModel;
+    }
 }
