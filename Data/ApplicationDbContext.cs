@@ -16,6 +16,7 @@ namespace WebApi.Data
         public DbSet<ShipRates> ShipRates { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<AppUserCompany> AppUserCompanies { get; set; }
+        public DbSet<Profile> Profiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,6 +38,12 @@ namespace WebApi.Data
                 .HasOne(appUserCompany => appUserCompany.Company) // This specifies that the AppUserCompany entity has a single Company. This sets up one side of a one-to-many relationship.
                 .WithMany(company => company.AppUserCompanies) // This specifies that the Company entity has many AppUserCompany entities. This sets up the other side of the one-to-many relationship.
                 .HasForeignKey(appUserCompany => appUserCompany.CompanyId); // This specifies that the CompanyId property on the AppUserCompany entity is the foreign key for this relationship.
+            
+            // Set up one-to-one relationship between AppUser and Profile
+            modelBuilder.Entity<AppUser>()
+                .HasOne(appUser => appUser.Profile)
+                .WithOne(profile => profile.AppUser)
+                .HasForeignKey<Profile>(profile => profile.AppUserId);
 
             var roles = new List<IdentityRole>
             {

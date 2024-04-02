@@ -7,5 +7,8 @@ namespace WebApi.Models
     public class AppUser : IdentityUser
     {
         public List<AppUserCompany> AppUserCompanies { get; set; } = new List<AppUserCompany>();
+        
+        // One-to-one relationship with Profile
+        public Profile? Profile { get; set; }
     }
 }
