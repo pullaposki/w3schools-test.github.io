@@ -5,6 +5,8 @@ using WebApi.Dtos;
 using WebApi.Interfaces;
 using WebApi.Models;
 
+// Test comment made locally on dev branch
+
 namespace WebApi.Controllers
 {
     [Route("api/account")]
@@ -23,19 +25,19 @@ namespace WebApi.Controllers
         }
 
         // Test change done in Azure
-        
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
             if (!ModelState.IsValid) return BadRequest("Invalid data");
-            
+
             var user = await _userManager.Users
                 .FirstOrDefaultAsync(u => u.UserName.ToLower() == dto.UserName.ToLower());
-            
+
             if (user == null) return Unauthorized("Invalid username or password");
-            
+
             var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
-            
+
             if (!result.Succeeded) return Unauthorized("Invalid username or password");
 
             return Ok(new NewUserDto
