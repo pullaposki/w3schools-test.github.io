@@ -21,6 +21,8 @@ namespace WebApi.Controllers
             _tokenService = tokenService;
             _signInManager = signInManager;
         }
+
+        // Test change done in Azure
         
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
