@@ -3,9 +3,9 @@ resources:
   - repository: TrainingWebApiRepo
     type: git
     name: 'Training Web Api/TrainingWebApiRepo'
-  - repository: TrainingWebApiTestsRepo
+  - repository: TrainingWebAPITestsRepo
     type: git
-    name: 'Training Web Api/TrainingWebApiTestsRepo'
+    name: 'Training Web Api/TrainingWebAPITestsRepo'
 
 
 trigger:
