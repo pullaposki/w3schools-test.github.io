@@ -5,9 +5,6 @@ using WebApi.Dtos;
 using WebApi.Interfaces;
 using WebApi.Models;
 
-// Test comment made locally on dev branch
-// 2nd test
-
 namespace WebApi.Controllers
 {
     [Route("api/account")]
@@ -25,9 +22,7 @@ namespace WebApi.Controllers
             _signInManager = signInManager;
         }
 
-        // Test change done in Azure
-
-        [HttpPost("login")]
+        [HttpPost("loginDevChange")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
             if (!ModelState.IsValid) return BadRequest("Invalid data");
