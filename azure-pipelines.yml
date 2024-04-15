@@ -10,7 +10,7 @@ variables:
   buildConfiguration: 'Release'
   solution: '**/WebApi.sln'
   project: '**/WebApi.csproj'
-  tests: '**/WebApiTests.csproj'
+  tests: '**/WebApi.Tests.csproj'
 
 steps:
 - task: NuGetToolInstaller@1
