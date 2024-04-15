@@ -1,8 +1,8 @@
 resources:
   repositories:
-  - repository: TrainingWebApiRepo
+  - repository: TrainingWebAPIRepo
     type: git
-    name: 'Training Web Api/TrainingWebApiRepo'
+    name: 'Training Web Api/TrainingWebAPIRepo'
   - repository: TrainingWebAPITestsRepo
     type: git
     name: 'Training Web Api/TrainingWebAPITestsRepo'
