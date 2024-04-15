@@ -1,3 +1,13 @@
+resources:
+  repositories:
+  - repository: TrainingWebApiRepo
+    type: git
+    name: 'Training Web Api/TrainingWebApiRepo'
+  - repository: TrainingWebApiTestsRepo
+    type: git
+    name: 'Training Web Api/TrainingWebApiTestsRepo'
+
+
 trigger:
   branches:
     include:
