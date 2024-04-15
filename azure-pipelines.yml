@@ -1,11 +1,11 @@
 resources:
   repositories:
-  - repository: TrainingWebAPIRepo
+  - repository: WebApi
     type: git
-    name: 'Training Web Api/TrainingWebAPIRepo'
-  - repository: TrainingWebAPITestsRepo
+    name: 'Training Web Api/WebApi'
+  - repository: WebApi.Tests
     type: git
-    name: 'Training Web Api/TrainingWebAPITestsRepo'
+    name: 'Training Web Api/WebApi.Tests'
 
 trigger:
   branches:
