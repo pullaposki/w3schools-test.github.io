@@ -1,0 +1,26 @@
+trigger:
+  branches:
+    include:
+      - master
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+- task: DownloadBuildArtifacts@1
+  inputs:
+    buildType: 'specific'
+    project: '1e708710-a215-4bf4-8cdf-281d46739876'
+    pipeline: '1'
+    buildVersionToDownload: 'latest'
+    downloadType: 'single'
+    artifactName: 's'
+    downloadPath: '$(Build.ArtifactsDirectory)'
+    
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'Azure subscription 1(7bde9003-f8a7-4f7b-b832-578f4a394077)'
+    appType: 'webApp'
+    appName: 'training-web-api'
+    package: '$(Build.ArtifactsDirectory)/**/*.zip'
+    deploymentMethod: 'auto'
