@@ -6,6 +6,7 @@ using WebApi.Interfaces;
 using WebApi.Models;
 
 // Test comment made locally on dev branch
+// 2nd test
 
 namespace WebApi.Controllers
 {
