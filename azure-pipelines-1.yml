@@ -14,7 +14,7 @@ steps:
     pipeline: '1'
     buildVersionToDownload: 'latest'
     downloadType: 'single'
-    artifactName: 's'
+    artifactName: 'webapiartifact'
     downloadPath: '$(Build.ArtifactsDirectory)'
     
 - task: AzureWebApp@1
